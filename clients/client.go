@@ -6,9 +6,9 @@ import (
 
 	"github.com/gorilla/websocket"
 
+	buffer "T/MessagingService/buffer"
 	"T/MessagingService/hub"
 	model "T/MessagingService/models"
-	pump "T/MessagingService/pumps"
 )
 
 var upgrader = websocket.Upgrader{
@@ -36,6 +36,6 @@ func ServeWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	subs := hub.Subscription{connec, roomID}
 	h.Register <- subs
-	go pump.ReadPump(subs)
-	go pump.WritePump(&subs)
+	go buffer.ReadPump(subs)
+	go buffer.WritePump(&subs)
 }
