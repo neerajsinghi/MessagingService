@@ -32,9 +32,11 @@ func ServeWebSocket(w http.ResponseWriter, r *http.Request) {
 		log.Println(err.Error())
 		return
 	}
-	connec := &hub.Connection{Send: make(chan model.MessageData), Ws: ws}
+	connec := &model.Connection{Send: make(chan model.MessageData), Ws: ws}
 
-	subs := hub.Subscription{connec, roomID}
+	subs := model.Subscription{}
+	subs.Conn = connec
+	subs.Room = roomID
 	h.Register <- subs
 	go buffer.ReadPump(subs)
 	go buffer.WritePump(&subs)

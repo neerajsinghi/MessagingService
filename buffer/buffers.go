@@ -27,7 +27,7 @@ const (
 )
 
 // readPump pumps messages from the websocket connection to the hub.
-func ReadPump(s hub.Subscription) {
+func ReadPump(s model.Subscription) {
 	c := s.Conn
 	h := hub.H
 	defer func() {
@@ -47,13 +47,13 @@ func ReadPump(s hub.Subscription) {
 		var msg1 model.MessageData
 		err = json.Unmarshal(msg, &msg1)
 
-		m := hub.Message{msg1, s.Room}
+		m := model.Message{msg1, s.Room}
 		h.Broadcast <- m
 	}
 }
 
 // writePump pumps messages from the hub to the websocket connection.
-func WritePump(s *hub.Subscription) {
+func WritePump(s *model.Subscription) {
 	c := s.Conn
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {

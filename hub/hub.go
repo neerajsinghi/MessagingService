@@ -1,61 +1,24 @@
 package hub
 
-import (
-	"github.com/gorilla/websocket"
+import model "T/MessagingService/models"
 
-	model "T/MessagingService/models"
-)
-
-type Connection struct {
-	// The websocket connection.
-	Ws *websocket.Conn
-
-	// Buffered channel of outbound messages.
-	Send chan model.MessageData
-}
-type Message struct {
-	Data model.MessageData
-	Room string
-}
-
-type Subscription struct {
-	Conn *Connection
-	Room string
-}
-
-// hub maintains the set of active connections and Broadcasts messages to the
-// connections.
-type Hub struct {
-	// Registered connections.
-	Rooms map[string]map[*Connection]bool
-
-	// Inbound messages from the connections.
-	Broadcast chan Message
-
-	// Register requests from the connections.
-	Register chan Subscription
-
-	// UnRegister requests from connections.
-	UnRegister chan Subscription
-}
-
-var H = Hub{
-	Broadcast:  make(chan Message),
-	Register:   make(chan Subscription),
-	UnRegister: make(chan Subscription),
-	Rooms:      make(map[string]map[*Connection]bool),
+var H = model.Hub{
+	Broadcast:  make(chan model.Message),
+	Register:   make(chan model.Subscription),
+	UnRegister: make(chan model.Subscription),
+	Rooms:      make(map[string]map[*model.Connection]bool),
 }
 
 func init() {
-	go H.run()
+	go run(&H)
 }
-func (h *Hub) run() {
+func run(h *model.Hub) {
 	for {
 		select {
 		case subscribe := <-h.Register:
 			connections := h.Rooms[subscribe.Room]
 			if connections == nil {
-				connections = make(map[*Connection]bool)
+				connections = make(map[*model.Connection]bool)
 				h.Rooms[subscribe.Room] = connections
 			}
 			h.Rooms[subscribe.Room][subscribe.Conn] = true
