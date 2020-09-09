@@ -1,13 +1,11 @@
 package main
 
 import (
+	"T/MessagingService/router"
 	"log"
 	"net/http"
 
 	"github.com/rs/cors"
-
-	"T/MessagingService/router"
-
 )
 
 // setupGlobalMiddleware will setup CORS
@@ -18,9 +16,7 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 
 // our main function
 func main() {
-
 	router := router.NewRouter()
-
-	log.Fatal(http.ListenAndServe(":6008", setupGlobalMiddleware(router)))
+	log.Fatal(http.ListenAndServe(":2000", setupGlobalMiddleware(router)))
 
 }
