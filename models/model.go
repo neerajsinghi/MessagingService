@@ -4,11 +4,11 @@ import "github.com/gorilla/websocket"
 
 //FeedStruct Data to be added to the database
 type MessageData struct {
-	Title        string
-	Body         string
-	TopicID      string
-	Userid       string
-	CurrentValue int
+	Title        string `json:"title,omitempty"`
+	Body         string `json:"body,omitempty"`
+	TopicID      string `json:"topic_id,omitempty"`
+	Userid       string `json:"userid,omitempty"`
+	CurrentValue int    `json:"current_value,omitempty"`
 }
 
 type Connection struct {
